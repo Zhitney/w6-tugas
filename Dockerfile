@@ -14,7 +14,9 @@ RUN echo "DATABASE_URL is: $DATABASE_URL"
 RUN npx prisma generate
 # RUN npx prisma migrate deploy
 # RUN npx prisma db seed
+RUN npm install dompurify
 RUN npm run build
+
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
