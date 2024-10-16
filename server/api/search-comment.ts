@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const result = await prisma.$queryRaw(
-      `SELECT * FROM GuestbookEntry WHERE comment LIKE ?`,
+      `SELECT * FROM GuestbookEntry WHERE comment LIKE $1`,
       `%${search}%`
     );
 

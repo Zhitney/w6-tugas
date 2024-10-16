@@ -69,36 +69,27 @@ const fetchComments = async () => {
     const response = await $fetch('/api/get-comments', {
       method: 'GET'
     })
-    // Sanitize each comment's content before displaying it
-    comments.value = response.map(comment => ({
-      ...comment,
-      comment: sanitizeComment(comment.comment) // Sanitize the comment content
-    }));
+    comments.value = response
   } catch (error) {
-    console.error('Failed to fetch comments:', error);
+    console.error('Failed to fetch comments:', error)
   }
 }
 
 const addComment = async () => {
   try {
-    form.value.comment = sanitizeComment(form.value.comment);
-
     await $fetch('/api/add-comment', {
       method: 'POST',
       body: form.value
     })
 
-    // Reset the form after submission
     form.value = {
       name: '',
       email: '',
       comment: ''
     }
-
-    // Fetch the updated comments list
-    await fetchComments();
+    await fetchComments()
   } catch (error) {
-    console.error('Failed to add comment:', error);
+    console.error('Failed to add comment:', error)
   }
 }
 
