@@ -12,9 +12,15 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const result = await prisma.$queryRawUnsafe(
-      `SELECT * FROM GuestbookEntry WHERE comment LIKE '%${search}%'`
-    );
+    // Use Prisma's prepared statements via `findMany` with parameterized query
+    const result = await prisma.guestbookEntry.findMany({
+      where: {
+        comment: {
+          contains: search,  
+          mode: 'insensitive'  
+        }
+      }
+    });
 
     return result;
   } catch (e) {
