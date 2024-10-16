@@ -40,7 +40,7 @@
             <h3>{{ comment.name }}</h3>
             <small>{{ comment.email }}</small>
           </header>
-          <div v-html="sanitizeComment(comment.comment)"></div>
+          <div>{{sanitizeComment(comment.comment)}}</div>
         </article>
       </section>
     </div>
@@ -60,32 +60,45 @@ const form = ref({
 const comments = ref([])
 const searchQuery = ref('')
 
+const sanitizeComment = (comment) => {
+  return DOMPurify.sanitize(comment);
+}
+
 const fetchComments = async () => {
   try {
     const response = await $fetch('/api/get-comments', {
       method: 'GET'
     })
-    comments.value = response
+    // Sanitize each comment's content before displaying it
+    comments.value = response.map(comment => ({
+      ...comment,
+      comment: sanitizeComment(comment.comment) // Sanitize the comment content
+    }));
   } catch (error) {
-    console.error('Failed to fetch comments:', error)
+    console.error('Failed to fetch comments:', error);
   }
 }
 
 const addComment = async () => {
   try {
+    form.value.comment = sanitizeComment(form.value.comment);
+
     await $fetch('/api/add-comment', {
       method: 'POST',
       body: form.value
     })
 
+    // Reset the form after submission
     form.value = {
       name: '',
       email: '',
       comment: ''
     }
-    await fetchComments()
+
+    // Fetch the updated comments list
+    await fetchComments();
   } catch (error) {
-    console.error('Failed to add comment:', error)
+    console.error('Failed to add comment:', error);
   }
 }
 
