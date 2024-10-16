@@ -40,7 +40,7 @@
             <h3>{{ comment.name }}</h3>
             <small>{{ comment.email }}</small>
           </header>
-          <div>{{ comment.comment }}</div>
+          <div v-html="sanitizeComment(comment.comment)"></div>
         </article>
       </section>
     </div>
@@ -49,6 +49,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import DOMPurify from 'dompurify'
 
 const form = ref({
   name: '',
